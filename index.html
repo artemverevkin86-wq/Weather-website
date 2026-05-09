@@ -5,213 +5,48 @@
     <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes">
     <title>Мир после — погода и события</title>
     <style>
-        * {
-            margin: 0;
-            padding: 0;
-            box-sizing: border-box;
-        }
-
-        body {
-            background: #0a0a0a;
-            font-family: -apple-system, 'Inter', 'Segoe UI', system-ui, sans-serif;
-            color: #ffffff;
-            padding: 20px 16px 40px;
-        }
-
-        /* главное окно */
-        .weather-app {
-            max-width: 500px;
-            margin: 0 auto;
-            background: #0f0f0f;
-            border-radius: 48px;
-            padding: 24px 22px 32px;
-            border: 1px solid #2a2a2a;
-        }
-
-        /* шапка */
-        .location-bar {
-            display: flex;
-            justify-content: space-between;
-            align-items: baseline;
-            margin-bottom: 32px;
-            color: #bcbcbc;
-            font-size: 14px;
-            border-bottom: 0.5px solid #2c2c2c;
-            padding-bottom: 12px;
-        }
+        * { margin: 0; padding: 0; box-sizing: border-box; }
+        body { background: #0a0a0a; font-family: -apple-system, 'Inter', 'Segoe UI', system-ui, sans-serif; color: #ffffff; padding: 20px 16px 40px; }
+        .weather-app { max-width: 500px; margin: 0 auto; background: #0f0f0f; border-radius: 48px; padding: 24px 22px 32px; border: 1px solid #2a2a2a; }
+        .location-bar { display: flex; justify-content: space-between; align-items: baseline; margin-bottom: 32px; color: #bcbcbc; font-size: 14px; border-bottom: 0.5px solid #2c2c2c; padding-bottom: 12px; }
         .city { font-weight: 600; color: #e2e2e2; }
-
-        /* основной блок температуры */
-        .main-temp-block {
-            text-align: center;
-            margin-bottom: 28px;
-        }
-        .big-temp {
-            font-size: 84px;
-            font-weight: 300;
-            letter-spacing: -4px;
-            line-height: 1;
-        }
-        .condition {
-            font-size: 22px;
-            font-weight: 400;
-            margin-top: 6px;
-            color: #dddddd;
-        }
-        .high-low {
-            font-size: 15px;
-            color: #aaa;
-            margin-top: 10px;
-        }
-
-        /* детали */
-        .details-row {
-            display: flex;
-            justify-content: space-between;
-            background: #161616;
-            border-radius: 44px;
-            padding: 14px 20px;
-            margin-bottom: 28px;
-        }
-        .detail-item {
-            text-align: center;
-            flex: 1;
-        }
-        .detail-label {
-            color: #8e8e8e;
-            font-size: 12px;
-            margin-bottom: 4px;
-        }
-        .detail-value {
-            font-weight: 500;
-        }
-
-        /* навигация по дням */
-        .day-nav {
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            margin: 24px 0 16px;
-        }
-        .day-arrow {
-            background: #1c1c1c;
-            border: none;
-            font-size: 26px;
-            padding: 6px 18px;
-            border-radius: 50px;
-            color: white;
-            cursor: pointer;
-        }
-        .selected-date {
-            font-weight: 500;
-            font-size: 18px;
-            background: #1a1a1a;
-            padding: 8px 20px;
-            border-radius: 40px;
-        }
-
-        /* районы */
-        .raions-title {
-            font-size: 14px;
-            font-weight: 500;
-            margin: 12px 0 12px 0;
-            color: #aaa;
-        }
-        .raions-grid {
-            display: flex;
-            flex-direction: column;
-            gap: 12px;
-            margin-bottom: 28px;
-        }
-        .raion-card {
-            background: #161616;
-            border-radius: 28px;
-            padding: 16px 18px;
-            display: flex;
-            justify-content: space-between;
-            align-items: center;
-            cursor: pointer;
-            transition: 0.1s ease;
-        }
+        .main-temp-block { text-align: center; margin-bottom: 28px; }
+        .big-temp { font-size: 84px; font-weight: 300; letter-spacing: -4px; line-height: 1; }
+        .condition { font-size: 22px; font-weight: 400; margin-top: 6px; color: #dddddd; }
+        .high-low { font-size: 15px; color: #aaa; margin-top: 10px; }
+        .details-row { display: flex; justify-content: space-between; background: #161616; border-radius: 44px; padding: 14px 20px; margin-bottom: 28px; }
+        .detail-item { text-align: center; flex: 1; }
+        .detail-label { color: #8e8e8e; font-size: 12px; margin-bottom: 4px; }
+        .detail-value { font-weight: 500; }
+        .day-nav { display: flex; justify-content: space-between; align-items: center; margin: 24px 0 16px; }
+        .day-arrow { background: #1c1c1c; border: none; font-size: 26px; padding: 6px 18px; border-radius: 50px; color: white; cursor: pointer; }
+        .selected-date { font-weight: 500; font-size: 18px; background: #1a1a1a; padding: 8px 20px; border-radius: 40px; }
+        .raions-title { font-size: 14px; font-weight: 500; margin: 12px 0 12px 0; color: #aaa; }
+        .raions-grid { display: flex; flex-direction: column; gap: 12px; margin-bottom: 28px; }
+        .raion-card { background: #161616; border-radius: 28px; padding: 16px 18px; display: flex; justify-content: space-between; align-items: center; cursor: pointer; transition: 0.1s ease; }
         .raion-card:active { background: #252525; }
         .raion-name { font-weight: 500; }
         .raion-temp { font-size: 22px; font-weight: 500; }
         .raion-icon { font-size: 28px; margin: 0 8px; }
         .raion-detail { display: flex; align-items: center; gap: 12px; }
-
-        /* почасовой прогноз */
-        .hourly-section {
-            margin-top: 8px;
-            margin-bottom: 20px;
-        }
-        .hourly-title {
-            font-size: 14px;
-            font-weight: 500;
-            margin-bottom: 12px;
-            color: #d4a373;
-        }
-        .hourly-scroll {
-            overflow-x: auto;
-            white-space: nowrap;
-            display: flex;
-            gap: 20px;
-            padding-bottom: 8px;
-        }
-        .hour-card {
-            display: inline-flex;
-            flex-direction: column;
-            align-items: center;
-            background: #141414;
-            padding: 10px 14px;
-            border-radius: 32px;
-            min-width: 70px;
-        }
+        .hourly-section { margin-top: 8px; margin-bottom: 20px; }
+        .hourly-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: #d4a373; }
+        .hourly-scroll { overflow-x: auto; white-space: nowrap; display: flex; gap: 20px; padding-bottom: 8px; }
+        .hour-card { display: inline-flex; flex-direction: column; align-items: center; background: #141414; padding: 10px 14px; border-radius: 32px; min-width: 70px; }
         .hour-time { font-size: 13px; color: #bcbcbc; }
         .hour-temp { font-size: 20px; font-weight: 500; margin: 6px 0 2px; }
         .hour-icon { font-size: 20px; }
         .hour-rain { font-size: 11px; color: #70b9ff; }
-
-        /* НОВЫЙ БЛОК — ЛЕНТА СОБЫТИЙ */
-        .events-block {
-            background: #1a1512;
-            border-radius: 32px;
-            padding: 18px;
-            margin: 20px 0 12px;
-        }
-        .events-title {
-            font-size: 16px;
-            font-weight: 600;
-            margin-bottom: 14px;
-            border-left: 3px solid #d4a373;
-            padding-left: 12px;
-            color: #ecd6b0;
-        }
-        .event-item {
-            padding: 10px 0;
-            border-bottom: 1px solid #2c241f;
-            font-size: 13px;
-            line-height: 1.4;
-        }
-        .event-date {
-            color: #b89a72;
-            font-size: 11px;
-            margin-bottom: 5px;
-        }
-        .event-text {
-            color: #ddd0c0;
-        }
-        .event-raion {
-            color: #d4a373;
-            font-weight: 500;
-        }
-
+        .events-block { background: #1a1512; border-radius: 28px; padding: 16px 18px; margin: 16px 0 8px; }
+        .events-title { font-size: 14px; font-weight: 500; margin-bottom: 12px; color: #d4a373; letter-spacing: 1px; }
+        .event-item { padding: 8px 0; border-bottom: 1px solid #2c241f; font-size: 13px; line-height: 1.4; display: flex; gap: 10px; }
+        .event-item:last-child { border-bottom: none; }
+        .event-icon { font-size: 16px; color: #d4a373; min-width: 24px; }
+        .event-text { color: #ddd0c0; }
+        .event-raion { color: #d4a373; font-weight: 500; }
+        .no-events { padding: 12px 0; text-align: center; color: #8a7a6a; font-style: italic; font-size: 13px; }
         .hidden { display: none; }
-        footer {
-            text-align: center;
-            font-size: 10px;
-            color: #4f4f4f;
-            margin-top: 28px;
-        }
+        footer { text-align: center; font-size: 10px; color: #4f4f4f; margin-top: 28px; }
     </style>
 </head>
 <body>
@@ -247,9 +82,8 @@
         <div class="hourly-scroll" id="hourlyContainer"></div>
     </div>
 
-    <!-- НОВАЯ ЛЕНТА СОБЫТИЙ -->
-    <div class="events-block" id="eventsBlock">
-        <div class="events-title">📻 ЛЕНТА СОБЫТИЙ</div>
+    <div class="events-block">
+        <div class="events-title">📻 ПОСЛЕДНИЕ СОБЫТИЯ</div>
         <div id="eventsList"></div>
     </div>
 
@@ -257,32 +91,32 @@
 </div>
 
 <script>
-    // ========== 1. ДАННЫЕ ПОГОДЫ (ТЕСТОВЫЕ) ==========
+    // ========== ДАННЫЕ ПОГОДЫ ==========
     const RAIONS = ["Прикубанский", "Нагорный", "Крылатское", "Черёмушки", "Солнечный", "Советский"];
     const TEMP_OFFSET = {"Прикубанский": 0.5, "Нагорный": -2, "Крылатское": -1, "Черёмушки": 0, "Солнечный": 1.5, "Советский": 0};
 
     const weatherDB = {
-        "2026-05-08": { dayLabel: "СЕГОДНЯ", mainTemp: 22, condition: "Ясно", feelsLike: 21, wind: 3, humidity: 47, high: 24, low: 12, weatherType: "Ясно" },
-        "2026-05-09": { dayLabel: "ЗАВТРА", mainTemp: 19, condition: "Небольшой дождь", feelsLike: 18, wind: 4, humidity: 72, high: 21, low: 11, weatherType: "Дождь" },
-        "2026-05-10": { dayLabel: "ПОСЛЕЗАВТРА", mainTemp: 16, condition: "Пасмурно", feelsLike: 15, wind: 5, humidity: 78, high: 18, low: 9, weatherType: "Пасмурно" }
+        "2026-05-09": { dayLabel: "СЕГОДНЯ", mainTemp: 22, condition: "Ясно", feelsLike: 21, wind: 3, humidity: 47, high: 24, low: 12, weatherType: "Ясно" },
+        "2026-05-10": { dayLabel: "ЗАВТРА", mainTemp: 19, condition: "Небольшой дождь", feelsLike: 18, wind: 4, humidity: 72, high: 21, low: 11, weatherType: "Дождь" },
+        "2026-05-11": { dayLabel: "ПОСЛЕЗАВТРА", mainTemp: 16, condition: "Пасмурно", feelsLike: 15, wind: 5, humidity: 78, high: 18, low: 9, weatherType: "Пасмурно" }
     };
 
     const datesList = Object.keys(weatherDB);
     let currentDateIdx = 0;
 
-    // ========== 2. ЛЕНТА СОБЫТИЙ (ТЕСТОВАЯ) — ПОТОМ ЗАМЕНИШЬ НА РЕАЛЬНУЮ ==========
+    // ========== ЛЕНТА СОБЫТИЙ ==========
     const eventsFeed = [
-        { date: "2026-05-08", raion: "Прикубанский", text: "На мясокомбинате Аврелиан слышны выстрелы. Рекомендуем обходить стороной." },
-        { date: "2026-05-08", raion: "Нагорный", text: "Авторынок Приоритет оцеплен. Говорят, там видели странных людей." },
-        { date: "2026-05-07", raion: "Крылатское", text: "У военного аэродрома замечено движение. Возможно, готовится вылет." },
-        { date: "2026-05-07", raion: "Солнечный", text: "Инфекционная больница №3 закрыта на карантин. Не приближайтесь." },
-        { date: "2026-05-06", raion: "Черёмушки", text: "На рынке «На Азовской» видели живого. Проверьте, может быть, ваш." }
+        { date: "2026-05-09", raion: "Прикубанский", text: "На мясокомбинате Аврелиан слышны выстрелы." },
+        { date: "2026-05-09", raion: "Нагорный", text: "Авторынок Приоритет оцеплен." },
+        { date: "2026-05-08", raion: "Крылатское", text: "У аэродрома замечено движение." },
+        { date: "2026-05-08", raion: "Солнечный", text: "Больница №3 закрыта на карантин." },
+        { date: "2026-05-07", raion: "Черёмушки", text: "На рынке видели живого человека." }
     ];
-
-    // сортируем события по дате (новые сверху)
     eventsFeed.sort((a,b) => new Date(b.date) - new Date(a.date));
 
-    // ========== 3. ОБЩИЕ ФУНКЦИИ ==========
+    // ========== КЕШ ДЛЯ ПОЧАСОВОГО ПРОГНОЗА ==========
+    let hourlyCache = {};
+
     function updateLiveDate() {
         const now = new Date();
         const day = now.getDate().toString().padStart(2,'0');
@@ -306,32 +140,40 @@
             let tempChange = 0;
             if (hour >= 14 && hour <= 17) tempChange = +2;
             else if (hour >= 22 || hour <= 5) tempChange = -3;
-            let temp = Math.round(baseTemp + tempChange + (Math.random() * 2 - 1));
-            temp = Math.min(temp, baseTemp + 3);
-            temp = Math.max(temp, baseTemp - 4);
+            let temp = Math.round(baseTemp + tempChange);
             let icon = temp < 12 ? "🌧️" : (temp < 18 ? "⛅" : "☀️");
-            let rain = Math.max(0, Math.floor(Math.random() * 50) - 20);
-            hourly.push({ time: timeLabel, temp: temp, icon: icon, rain: rain + "%" });
+            let rain = temp < 12 ? "70%" : (temp < 18 ? "30%" : "10%");
+            hourly.push({ time: timeLabel, temp: temp, icon: icon, rain: rain });
         }
         return hourly;
     }
 
     function renderHourlyForRaion(raionName, dayData) {
+        const cacheKey = `${dayData.mainTemp}_${raionName}`;
+        if (hourlyCache[cacheKey]) {
+            const cached = hourlyCache[cacheKey];
+            document.getElementById("hourlyTitle").innerHTML = `📅 ПОЧАСОВО (${raionName})`;
+            document.getElementById("hourlyBlock").classList.remove("hidden");
+            document.getElementById("hourlyContainer").innerHTML = cached;
+            return;
+        }
         const raionTemp = Math.round(dayData.mainTemp + TEMP_OFFSET[raionName]);
         const hourly = generateHourlyForecast(raionTemp);
         const container = document.getElementById("hourlyContainer");
         container.innerHTML = "";
+        let html = "";
         for (let h of hourly) {
-            const card = document.createElement("div");
-            card.className = "hour-card";
-            card.innerHTML = `
-                <div class="hour-time">${h.time}</div>
-                <div class="hour-temp">${h.temp}°</div>
-                <div class="hour-icon">${h.icon}</div>
-                <div class="hour-rain">${h.rain}</div>
+            html += `
+                <div class="hour-card">
+                    <div class="hour-time">${h.time}</div>
+                    <div class="hour-temp">${h.temp}°</div>
+                    <div class="hour-icon">${h.icon}</div>
+                    <div class="hour-rain">${h.rain}</div>
+                </div>
             `;
-            container.appendChild(card);
         }
+        container.innerHTML = html;
+        hourlyCache[cacheKey] = html;
         document.getElementById("hourlyTitle").innerHTML = `📅 ПОЧАСОВО (${raionName})`;
         document.getElementById("hourlyBlock").classList.remove("hidden");
     }
@@ -360,39 +202,27 @@
         }
     }
 
-    // ========== 4. ОТРИСОВКА ЛЕНТЫ СОБЫТИЙ ==========
     function renderEventsFeed() {
         const container = document.getElementById("eventsList");
         if (!eventsFeed.length) {
-            container.innerHTML = "<div class='event-item' style='opacity:0.7'>Событий пока нет. Мир тих.</div>";
+            container.innerHTML = "<div class='no-events'>📻 Тишина в эфире. Событий пока нет.</div>";
             return;
         }
         container.innerHTML = "";
-        // показываем последние 5 событий
-        eventsFeed.slice(0,5).forEach(ev => {
+        eventsFeed.slice(0, 6).forEach(ev => {
             const div = document.createElement("div");
             div.className = "event-item";
             div.innerHTML = `
-                <div class="event-date">${ev.date.replace(/-/g, '.')}</div>
+                <div class="event-icon">📻</div>
                 <div class="event-text"><span class="event-raion">${ev.raion}</span> — ${ev.text}</div>
             `;
             container.appendChild(div);
         });
-        if (eventsFeed.length > 5) {
-            const moreDiv = document.createElement("div");
-            moreDiv.className = "event-item";
-            moreDiv.style.borderBottom = "none";
-            moreDiv.style.fontStyle = "italic";
-            moreDiv.style.opacity = "0.6";
-            moreDiv.innerText = `… и ещё ${eventsFeed.length - 5} событий. Полная история будет позже.`;
-            container.appendChild(moreDiv);
-        }
     }
 
     function renderCurrentDay() {
         const dayData = weatherDB[datesList[currentDateIdx]];
         if (!dayData) return;
-
         document.getElementById("selectedDate").innerHTML = dayData.dayLabel;
         document.getElementById("mainTemp").innerHTML = dayData.mainTemp + "°";
         document.getElementById("mainCondition").innerHTML = dayData.condition;
@@ -400,26 +230,25 @@
         document.getElementById("feelsLike").innerHTML = dayData.feelsLike + "°";
         document.getElementById("wind").innerHTML = dayData.wind + " м/с";
         document.getElementById("humidity").innerHTML = dayData.humidity + "%";
-
         renderRaions(dayData);
         document.getElementById("hourlyBlock").classList.add("hidden");
     }
 
-    // ========== 5. НАВИГАЦИЯ ==========
     document.getElementById("prevDay").addEventListener("click", () => {
         if (currentDateIdx > 0) {
             currentDateIdx--;
             renderCurrentDay();
+            hourlyCache = {};
         }
     });
     document.getElementById("nextDay").addEventListener("click", () => {
         if (currentDateIdx < datesList.length - 1) {
             currentDateIdx++;
             renderCurrentDay();
+            hourlyCache = {};
         }
     });
 
-    // ========== 6. ЗАПУСК ==========
     updateLiveDate();
     renderCurrentDay();
     renderEventsFeed();
