@@ -1,386 +1,405 @@
 <!DOCTYPE html>
 <html lang="ru">
 <head>
-  <meta charset="UTF-8">
-  <meta name="viewport" content="width=device-width, initial-scale=1.0, user-scalable=yes, viewport-fit=cover">
-  <title>Мир после — погода</title>
-  <style>
-    * {
-      margin: 0;
-      padding: 0;
-      box-sizing: border-box;
-    }
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0, maximum-scale=1.0, user-scalable=no">
+    <title>МИР ПОСЛЕ — погода</title>
+    <style>
+        :root {
+            --bg-dark: #0f0c0a;
+            --card-bg: #1f1b15;
+            --card-border: #3d3328;
+            --text-main: #dfd2bd;
+            --text-muted: #958a7a;
+            --accent: #c4ae87;
+        }
 
-    body {
-      background: #0a0a0a;
-      font-family: 'Google Sans', system-ui, -apple-system, 'Segoe UI', Roboto, Helvetica, sans-serif;
-      color: #f1f3f4;
-      padding: 16px 12px 32px;
-    }
+        * {
+            box-sizing: border-box;
+            margin: 0;
+            padding: 0;
+        }
 
-    .weather-app {
-      max-width: 500px;
-      margin: 0 auto;
-    }
+        body {
+            background-color: var(--bg-dark);
+            color: var(--text-main);
+            font-family: -apple-system, BlinkMacSystemFont, "Segoe UI", Roboto, Helvetica, Arial, sans-serif;
+            line-height: 1.4;
+            overscroll-behavior-y: none;
+        }
 
-    /* шапка */
-    .app-bar {
-      display: flex;
-      justify-content: space-between;
-      align-items: baseline;
-      padding: 8px 0 16px;
-      margin-bottom: 8px;
-    }
-    .app-bar h1 {
-      font-size: 24px;
-      font-weight: 500;
-      letter-spacing: -0.2px;
-      color: #e8eaed;
-    }
-    .date {
-      font-size: 14px;
-      color: #9aa0a6;
-    }
+        .app-wrapper {
+            max-width: 480px;
+            margin: 0 auto;
+            min-height: 100vh;
+            display: flex;
+            flex-direction: column;
+            background-color: var(--bg-dark);
+            position: relative;
+            padding-bottom: 60px;
+        }
 
-    /* главная карточка температуры */
-    .main-weather-card {
-      background: #1e1e1e;
-      border-radius: 32px;
-      padding: 24px 20px;
-      margin-bottom: 24px;
-      text-align: center;
-      box-shadow: 0 1px 2px rgba(0,0,0,0.3);
-    }
-    .big-temp {
-      font-size: 72px;
-      font-weight: 500;
-      letter-spacing: -4px;
-      line-height: 1.1;
-    }
-    .condition-text {
-      font-size: 20px;
-      margin-top: 8px;
-      color: #e8eaed;
-    }
-    .high-low {
-      font-size: 16px;
-      color: #9aa0a6;
-      margin-top: 12px;
-    }
+        .top-header {
+            padding: 20px 15px;
+        }
 
-    /* детали */
-    .weather-details {
-      display: flex;
-      justify-content: space-between;
-      background: #1e1e1e;
-      border-radius: 48px;
-      padding: 12px 16px;
-      margin-bottom: 24px;
-      gap: 8px;
-    }
-    .detail-item {
-      flex: 1;
-      text-align: center;
-    }
-    .detail-label {
-      font-size: 12px;
-      color: #9aa0a6;
-      margin-bottom: 4px;
-    }
-    .detail-value {
-      font-size: 16px;
-      font-weight: 500;
-    }
+        .top-header h1 {
+            font-size: 1.4rem;
+            color: var(--accent);
+            text-transform: uppercase;
+            letter-spacing: 1px;
+            margin-bottom: 5px;
+        }
 
-    /* навигация дням */
-    .day-nav {
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      margin: 16px 0 20px;
-    }
-    .day-arrow {
-      background: #1e1e1e;
-      border: none;
-      font-size: 28px;
-      padding: 8px 20px;
-      border-radius: 48px;
-      color: white;
-      cursor: pointer;
-      transition: 0.1s;
-    }
-    .day-arrow:active {
-      background: #333;
-    }
-    .selected-date {
-      font-size: 18px;
-      font-weight: 500;
-      background: #1e1e1e;
-      padding: 8px 24px;
-      border-radius: 48px;
-    }
+        .date-display {
+            color: var(--text-muted);
+            font-size: 0.9rem;
+        }
 
-    /* заголовок секции */
-    .section-title {
-      font-size: 14px;
-      font-weight: 500;
-      margin: 8px 0 12px;
-      color: #9aa0a6;
-      letter-spacing: 0.3px;
-    }
+        .content {
+            padding: 0 15px;
+            display: flex;
+            flex-direction: column;
+            gap: 15px;
+        }
 
-    /* карточки районов */
-    .raions-grid {
-      display: flex;
-      flex-direction: column;
-      gap: 12px;
-      margin-bottom: 28px;
-    }
-    .raion-card {
-      background: #1e1e1e;
-      border-radius: 28px;
-      padding: 16px 20px;
-      display: flex;
-      justify-content: space-between;
-      align-items: center;
-      cursor: pointer;
-      transition: background 0.1s;
-    }
-    .raion-card:active {
-      background: #2c2c2c;
-    }
-    .raion-name {
-      font-size: 17px;
-      font-weight: 500;
-    }
-    .raion-temp {
-      font-size: 26px;
-      font-weight: 500;
-    }
-    .raion-icon {
-      font-size: 28px;
-      margin-right: 12px;
-    }
-    .raion-detail {
-      display: flex;
-      align-items: center;
-    }
+        .card {
+            background-color: var(--card-bg);
+            border: 1px solid var(--card-border);
+            border-radius: 0;
+            padding: 15px;
+        }
 
-    /* почасовой прогноз */
-    .hourly-section {
-      margin-top: 8px;
-      margin-bottom: 24px;
-    }
-    .hourly-scroll {
-      overflow-x: auto;
-      white-space: nowrap;
-      display: flex;
-      gap: 14px;
-      padding-bottom: 6px;
-    }
-    .hour-card {
-      background: #1e1e1e;
-      border-radius: 28px;
-      padding: 12px 16px;
-      min-width: 70px;
-      text-align: center;
-      display: inline-flex;
-      flex-direction: column;
-      align-items: center;
-    }
-    .hour-time {
-      font-size: 14px;
-      color: #9aa0a6;
-    }
-    .hour-temp {
-      font-size: 20px;
-      font-weight: 500;
-      margin: 6px 0 2px;
-    }
-    .hour-icon {
-      font-size: 22px;
-    }
-    .hour-rain {
-      font-size: 11px;
-      color: #8ab4f8;
-    }
+        .card h3 {
+            font-size: 0.9rem;
+            color: var(--text-muted);
+            text-transform: uppercase;
+            margin-bottom: 12px;
+            font-weight: normal;
+            letter-spacing: 0.5px;
+        }
 
-    .loading {
-      text-align: center;
-      padding: 24px;
-      color: #9aa0a6;
-    }
+        .main-weather-card {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+        }
 
-    .hidden {
-      display: none;
-    }
+        .weather-info h2 {
+            font-size: 1.3rem;
+            margin-bottom: 5px;
+            font-weight: 500;
+        }
 
-    footer {
-      text-align: center;
-      font-size: 11px;
-      color: #5a5a5a;
-      margin-top: 32px;
-    }
-  </style>
+        .huge-temp {
+            font-size: 3rem;
+            font-weight: bold;
+            color: var(--text-main);
+            line-height: 1;
+            display: block;
+            margin-bottom: 10px;
+        }
+
+        .weather-details p {
+            color: var(--text-muted);
+            font-size: 0.85rem;
+        }
+
+        .weather-icon-large {
+            font-size: 4rem;
+            opacity: 0.8;
+        }
+
+        .hourly-forecast-card {
+            position: relative;
+            padding: 15px 5px 15px 15px;
+        }
+
+        .hourly-scroll {
+            display: flex;
+            gap: 20px;
+            overflow-x: auto;
+            padding-bottom: 10px;
+            scrollbar-width: none;
+        }
+
+        .hourly-scroll::-webkit-scrollbar {
+            display: none;
+        }
+
+        .hour-item {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            min-width: 45px;
+        }
+
+        .h-time { color: var(--text-muted); font-size: 0.85rem; margin-bottom: 8px; }
+        .h-icon { font-size: 1.5rem; margin-bottom: 8px; }
+        .h-temp { font-weight: bold; font-size: 1.1rem; margin-bottom: 8px; }
+        .h-precip { color: var(--text-muted); font-size: 0.75rem; }
+
+        .scroll-arrow {
+            position: absolute;
+            right: 5px;
+            top: 50%;
+            transform: translateY(-50%);
+            background: rgba(31, 27, 21, 0.9);
+            width: 24px;
+            height: 24px;
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            pointer-events: none;
+        }
+
+        .events-list {
+            display: flex;
+            flex-direction: column;
+        }
+
+        .event-item {
+            display: flex;
+            gap: 15px;
+            padding: 12px 0;
+            border-bottom: 1px solid var(--card-border);
+        }
+
+        .event-item:last-child {
+            border-bottom: none;
+            padding-bottom: 0;
+        }
+
+        .event-icon {
+            font-size: 1.5rem;
+            color: var(--text-muted);
+            min-width: 30px;
+            text-align: center;
+        }
+
+        .event-meta {
+            display: flex;
+            flex-direction: column;
+            min-width: 80px;
+        }
+
+        .event-time { color: var(--text-muted); font-size: 0.85rem; }
+        .event-dist { color: var(--text-muted); font-size: 0.85rem; }
+
+        .event-text {
+            font-size: 0.9rem;
+            line-height: 1.3;
+        }
+
+        .bottom-nav {
+            position: absolute;
+            bottom: 0;
+            left: 0;
+            width: 100%;
+            height: 50px;
+            background-color: var(--bg-dark);
+            border-top: 1px solid var(--card-border);
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            padding: 0 20px;
+        }
+
+        .nav-btn {
+            background: none;
+            border: none;
+            color: var(--text-muted);
+            font-size: 1.5rem;
+            cursor: pointer;
+        }
+
+        .raion-selector {
+            margin-top: 10px;
+            display: flex;
+            gap: 8px;
+            flex-wrap: wrap;
+        }
+        .raion-btn {
+            background: var(--card-bg);
+            border: 1px solid var(--card-border);
+            color: var(--text-muted);
+            padding: 6px 12px;
+            cursor: pointer;
+            font-size: 0.8rem;
+        }
+        .raion-btn.active {
+            background: var(--accent);
+            color: var(--bg-dark);
+            border-color: var(--accent);
+        }
+    </style>
 </head>
 <body>
-<div class="weather-app">
-  <div class="app-bar">
-    <h1>🎙️ Мир после</h1>
-    <div class="date" id="liveDate"></div>
-  </div>
+<div class="app-wrapper">
+    <header class="top-header">
+        <h1>МИР ПОСЛЕ</h1>
+        <div id="current-date" class="date-display"></div>
+    </header>
 
-  <div class="main-weather-card">
-    <div class="big-temp" id="mainTemp">--°</div>
-    <div class="condition-text" id="mainCondition">--</div>
-    <div class="high-low" id="highLow"></div>
-  </div>
+    <main class="content">
+        <!-- Главная карточка (динамическая под выбранный район) -->
+        <section class="card main-weather-card">
+            <div class="weather-info">
+                <h2 id="current-district">Прикубанский</h2>
+                <div class="temp-block">
+                    <span class="huge-temp" id="main-temp">+22°</span>
+                </div>
+                <div class="weather-details">
+                    <p id="feels-like">Ощущается как +21°</p>
+                    <p id="wind-info">Ветер: 3 м/с, юго-вост.</p>
+                </div>
+            </div>
+            <div class="weather-icon-large" id="main-icon">
+                ☀️
+            </div>
+        </section>
 
-  <div class="weather-details">
-    <div class="detail-item">
-      <div class="detail-label">ощущается</div>
-      <div class="detail-value" id="feelsLike">--°</div>
-    </div>
-    <div class="detail-item">
-      <div class="detail-label">ветер</div>
-      <div class="detail-value" id="wind">-- м/с</div>
-    </div>
-    <div class="detail-item">
-      <div class="detail-label">влажность</div>
-      <div class="detail-value" id="humidity">--%</div>
-    </div>
-  </div>
+        <!-- Переключатель районов -->
+        <div class="raion-selector" id="raion-selector"></div>
 
-  <div class="day-nav">
-    <button class="day-arrow" id="prevDay">←</button>
-    <span class="selected-date" id="selectedDate">СЕГОДНЯ</span>
-    <button class="day-arrow" id="nextDay">→</button>
-  </div>
+        <!-- Почасовой прогноз -->
+        <section class="card hourly-forecast-card">
+            <div class="hourly-scroll" id="hourly-container"></div>
+            <div class="scroll-arrow">›</div>
+        </section>
 
-  <div class="section-title">ПОГОДА В РАЙОНАХ</div>
-  <div class="raions-grid" id="raionsContainer"></div>
+        <!-- Особые отметки (активность зомби) -->
+        <section class="card notes-card">
+            <h3>ОСОБЫЕ ОТМЕТКИ</h3>
+            <p id="zombie-status">Активность зомби: низкая</p>
+        </section>
 
-  <div id="hourlyBlock" class="hourly-section hidden">
-    <div class="section-title" id="hourlyTitle">ПОЧАСОВО</div>
-    <div class="hourly-scroll" id="hourlyContainer"></div>
-  </div>
+        <!-- Лента событий (пока статичная, потом можно обновлять) -->
+        <section class="card events-card">
+            <h3>ЛЕНТА СОБЫТИЙ</h3>
+            <div class="events-list" id="events-list">
+                <div class="event-item">
+                    <div class="event-icon">⚠️</div>
+                    <div class="event-meta">
+                        <span class="event-time">сегодня</span>
+                        <span class="event-dist">Крылатское</span>
+                    </div>
+                    <div class="event-text">
+                        На военном аэродроме замечено движение. Рекомендуем обходить стороной.
+                    </div>
+                </div>
+                <div class="event-item">
+                    <div class="event-icon">🌫️</div>
+                    <div class="event-meta">
+                        <span class="event-time">вчера</span>
+                        <span class="event-dist">Нагорный</span>
+                    </div>
+                    <div class="event-text">
+                        Туман у авторынка — зомби незаметны до последнего момента.
+                    </div>
+                </div>
+            </div>
+        </section>
+    </main>
 
-  <footer>Мир после… мы ещё живы. А вы?</footer>
+    <nav class="bottom-nav">
+        <button class="nav-btn">≡</button>
+        <button class="nav-btn">⌕</button>
+    </nav>
 </div>
 
 <script>
-  const RAIONS = ["Прикубанский", "Нагорный", "Крылатское", "Черёмушки", "Солнечный", "Советский"];
-  let currentWeatherData = null;
-  let hourlyCache = {};
+    // --------------------------------------------------------------
+    // СТАТИЧНЫЕ ДАННЫЕ ПО РАЙОНАМ
+    // --------------------------------------------------------------
+    const districts = [
+        { name: "Прикубанский", temp: 22, feelsLike: 21, wind: 3, icon: "☀️", activity: "низкая" },
+        { name: "Нагорный", temp: 20, feelsLike: 18, wind: 4, icon: "🌫️", activity: "высокая" },
+        { name: "Крылатское", temp: 21, feelsLike: 19, wind: 3, icon: "☁️", activity: "средняя" },
+        { name: "Черёмушки", temp: 22, feelsLike: 21, wind: 3, icon: "☀️", activity: "низкая" },
+        { name: "Солнечный", temp: 24, feelsLike: 23, wind: 2, icon: "☀️", activity: "низкая" },
+        { name: "Советский", temp: 22, feelsLike: 20, wind: 4, icon: "🌧️", activity: "средняя" }
+    ];
 
-  function updateLiveDate() {
-    const now = new Date();
-    const day = now.getDate().toString().padStart(2,'0');
-    const month = (now.getMonth()+1).toString().padStart(2,'0');
-    const year = now.getFullYear();
-    document.getElementById("liveDate").innerText = `${day}.${month}.${year}`;
-  }
-
-  function getWeatherIcon(weatherType) {
-    const map = {
-      "Солнечно": "☀️", "Дождь": "🌧️", "Туман": "🌫️",
-      "Гроза": "⛈️", "Аномальная жара": "🔥", "Аномальный холод": "❄️"
-    };
-    return map[weatherType] || "🌡️";
-  }
-
-  function generateHourlyForecast(baseTemp) {
-    const now = new Date();
-    const currentHour = now.getHours();
-    const hourly = [];
-    for (let i = 0; i < 10; i++) {
-      let hour = (currentHour + i) % 24;
-      let timeLabel = hour.toString().padStart(2, '0') + ":00";
-      let tempChange = 0;
-      if (hour >= 14 && hour <= 17) tempChange = +2;
-      else if (hour >= 22 || hour <= 5) tempChange = -3;
-      let temp = Math.round(baseTemp + tempChange);
-      let icon = temp < 12 ? "🌧️" : (temp < 18 ? "⛅" : "☀️");
-      let rain = temp < 12 ? "70%" : (temp < 18 ? "30%" : "10%");
-      hourly.push({ time: timeLabel, temp: temp, icon: icon, rain: rain });
+    // Почасовой прогноз (общий, будет меняться в зависимости от района)
+    function getHourlyForecast(baseTemp) {
+        const now = new Date();
+        const currentHour = now.getHours();
+        const hourly = [];
+        for (let i = 0; i < 8; i++) {
+            let hour = (currentHour + i) % 24;
+            let timeLabel = hour.toString().padStart(2, '0') + ":00";
+            let tempChange = 0;
+            if (hour >= 14 && hour <= 17) tempChange = +2;
+            else if (hour >= 22 || hour <= 5) tempChange = -3;
+            let temp = Math.round(baseTemp + tempChange);
+            let icon = temp < 12 ? "🌧️" : (temp < 18 ? "⛅" : "☀️");
+            let rain = temp < 12 ? "70%" : (temp < 18 ? "30%" : "10%");
+            hourly.push({ time: timeLabel, temp: temp, icon: icon, rain: rain });
+        }
+        return hourly;
     }
-    return hourly;
-  }
 
-  function renderHourlyForRaion(raionName) {
-    if (!currentWeatherData) return;
-    const raionTemp = currentWeatherData.raions[raionName].temp;
-    const cacheKey = `${raionTemp}_${raionName}`;
-    if (hourlyCache[cacheKey]) {
-      document.getElementById("hourlyTitle").innerHTML = `📅 ПОЧАСОВО (${raionName})`;
-      document.getElementById("hourlyBlock").classList.remove("hidden");
-      document.getElementById("hourlyContainer").innerHTML = hourlyCache[cacheKey];
-      return;
+    let currentDistrictIndex = 0;
+
+    function updateUI() {
+        const district = districts[currentDistrictIndex];
+        document.getElementById("current-district").innerText = district.name;
+        document.getElementById("main-temp").innerHTML = `+${district.temp}°`;
+        document.getElementById("feels-like").innerHTML = `Ощущается как +${district.feelsLike}°`;
+        document.getElementById("wind-info").innerHTML = `Ветер: ${district.wind} м/с, юго-вост.`;
+        document.getElementById("main-icon").innerHTML = district.icon;
+        document.getElementById("zombie-status").innerHTML = `Активность зомби: ${district.activity}`;
+
+        // Обновляем почасовой прогноз под выбранный район
+        const hourlyData = getHourlyForecast(district.temp);
+        const container = document.getElementById("hourly-container");
+        container.innerHTML = "";
+        for (let h of hourlyData) {
+            const hourDiv = document.createElement("div");
+            hourDiv.className = "hour-item";
+            hourDiv.innerHTML = `
+                <span class="h-time">${h.time}</span>
+                <span class="h-icon">${h.icon}</span>
+                <span class="h-temp">+${h.temp}°</span>
+                <span class="h-precip">💧 ${h.rain}</span>
+            `;
+            container.appendChild(hourDiv);
+        }
     }
-    const hourly = generateHourlyForecast(raionTemp);
-    let html = "";
-    for (let h of hourly) {
-      html += `
-        <div class="hour-card">
-          <div class="hour-time">${h.time}</div>
-          <div class="hour-temp">${h.temp}°</div>
-          <div class="hour-icon">${h.icon}</div>
-          <div class="hour-rain">${h.rain}</div>
-        </div>
-      `;
+
+    function buildRaionSelector() {
+        const container = document.getElementById("raion-selector");
+        container.innerHTML = "";
+        districts.forEach((d, idx) => {
+            const btn = document.createElement("button");
+            btn.className = "raion-btn" + (idx === currentDistrictIndex ? " active" : "");
+            btn.innerText = d.name;
+            btn.onclick = () => {
+                currentDistrictIndex = idx;
+                updateUI();
+                document.querySelectorAll(".raion-btn").forEach((b, i) => {
+                    if (i === idx) b.classList.add("active");
+                    else b.classList.remove("active");
+                });
+            };
+            container.appendChild(btn);
+        });
     }
-    document.getElementById("hourlyTitle").innerHTML = `📅 ПОЧАСОВО (${raionName})`;
-    document.getElementById("hourlyBlock").classList.remove("hidden");
-    document.getElementById("hourlyContainer").innerHTML = html;
-    hourlyCache[cacheKey] = html;
-  }
 
-  function renderRaions() {
-    if (!currentWeatherData) return;
-    const container = document.getElementById("raionsContainer");
-    container.innerHTML = "";
-    for (let raion of RAIONS) {
-      const r = currentWeatherData.raions[raion];
-      const icon = getWeatherIcon(r.weather);
-      const card = document.createElement("div");
-      card.className = "raion-card";
-      card.innerHTML = `
-        <div class="raion-name">${raion}</div>
-        <div class="raion-detail">
-          <span class="raion-icon">${icon}</span>
-          <span class="raion-temp">${r.temp}°</span>
-        </div>
-      `;
-      card.addEventListener("click", () => { renderHourlyForRaion(raion); });
-      container.appendChild(card);
+    function updateDate() {
+        const now = new Date();
+        const options = { weekday: 'short', day: 'numeric', month: 'long', hour: '2-digit', minute: '2-digit' };
+        const formatted = now.toLocaleDateString('ru-RU', options);
+        document.getElementById("current-date").innerText = formatted;
     }
-  }
 
-  function renderMainData() {
-    if (!currentWeatherData) return;
-    document.getElementById("mainTemp").innerHTML = currentWeatherData.mainTemp + "°";
-    document.getElementById("mainCondition").innerHTML = currentWeatherData.weatherType;
-    document.getElementById("highLow").innerHTML = `↑${currentWeatherData.mainTemp+3}° / ↓${currentWeatherData.mainTemp-4}°`;
-    document.getElementById("feelsLike").innerHTML = (currentWeatherData.mainTemp-1) + "°";
-    document.getElementById("wind").innerHTML = "3 м/с";
-    document.getElementById("humidity").innerHTML = "47%";
-    renderRaions();
-  }
-
-  function loadWeatherData() {
-    fetch('data/weather.json?t=' + new Date().getTime())
-      .then(res => { if (!res.ok) throw new Error(); return res.json(); })
-      .then(data => {
-        currentWeatherData = data;
-        renderMainData();
-      })
-      .catch(() => {
-        document.getElementById("raionsContainer").innerHTML = '<div class="loading">⚠️ Не удалось загрузить погоду. Попробуйте позже.</div>';
-      });
-  }
-
-  updateLiveDate();
-  loadWeatherData();
+    updateDate();
+    buildRaionSelector();
+    updateUI();
 </script>
 </body>
 </html>
